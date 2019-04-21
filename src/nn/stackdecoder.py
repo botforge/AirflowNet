@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from convbnrelu import ConvBnRelu2d
+from nn.convbnrelu import ConvBnRelu2d
 import pdb
 
 class StackDecoder(nn.Module):

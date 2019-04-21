@@ -1,9 +1,11 @@
+import sys
+sys.path.append("/home/dhruvkar/Desktop/Robotics/rp/Airflownet/src")
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from convbnrelu import ConvBnRelu2d
-from stackencoder import StackEncoder
-from stackdecoder import StackDecoder
+from nn.convbnrelu import ConvBnRelu2d
+from nn.stackencoder import StackEncoder
+from nn.stackdecoder import StackDecoder
 
 #1024 x 1024 Airflow Images
 class Airflow_Unet1024(nn.Module):
@@ -86,7 +88,7 @@ class Airflow_Unet256(nn.Module):
         self.up3 = StackDecoder(256, 256, 128, kernel_size=3) #64
         self.up2 = StackDecoder(128, 128, 64, kernel_size=3) #128
         self.up1 = StackDecoder(64, 64, 64, kernel_size=3) #64
-        self.classify = nn.COnv2d(24, 1, kernel_size=1, padding=0, stride=1, bias=True)
+        self.classify = nn.Conv2d(24, 1, kernel_size=1, padding=0, stride=1, bias=True)
 
     def forward(self, x):
         out = x
