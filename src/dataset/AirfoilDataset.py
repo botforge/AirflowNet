@@ -6,7 +6,7 @@ import numpy as np
 import scipy
 import scipy.ndimage
 import re
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, Sampler
 from torchvision import transforms, utils
 from PIL import Image
 import collections
@@ -49,7 +49,6 @@ class AirfoilDataset(Dataset):
 
     def __getitem__(self, i):
         pressure_img = Image.open(self.data_path + '/' + self.samples[i] + '/' + 'p.png')
-        print(self.samples[i])
         size = (800, 800)
         pressure_img.thumbnail(size, Image.NEAREST)
         pressure_img_tensor = transforms.ToTensor()(pressure_img)
@@ -74,10 +73,12 @@ class AirfoilDataset(Dataset):
 
         if self.tfms is not None:
             x = self.tfms(x)
+
+        x = torch.unsqueeze(x, 0)
+        y = torch.unsqueeze(y, 0)
+        
         return (x, y)
 
-        
-            
 def main():
     path = '/home/dhruvkar/Desktop/Robotics/rp/AirflowNet/data/images'
     ad = AirfoilDataset(path, sdf=True)

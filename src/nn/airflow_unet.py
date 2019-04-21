@@ -87,36 +87,52 @@ class Airflow_Unet256(nn.Module):
         self.up4 = StackDecoder(512, 512, 256, kernel_size=3) #32
         self.up3 = StackDecoder(256, 256, 128, kernel_size=3) #64
         self.up2 = StackDecoder(128, 128, 64, kernel_size=3) #128
-        self.up1 = StackDecoder(64, 64, 64, kernel_size=3) #64
+        self.up1 = StackDecoder(64, 64, 24, kernel_size=3) #64
         self.classify = nn.Conv2d(24, 1, kernel_size=1, padding=0, stride=1, bias=True)
 
     def forward(self, x):
         out = x
-        print('x ', x.size())
+        #print('x ', x.size())
 
         down1, out = self.down1(out)
-        print('down1 ', down1.size())
+        #print('down1 ', down1.size())
 
         down2, out = self.down2(out)
-        print('down1 ', down2.size())
+        #print('down1 ', down2.size())
 
         down3, out = self.down3(out)
-        print('down3 ', down3.size())
+        #print('down3 ', down3.size())
 
         down4, out = self.down4(out)
-        print('down4 ', down4.size())
+        #print('down4 ', down4.size())
 
         down5, out = self.down5(out)
-        print('down5 ', down5.size())
+        #print('down5 ', down5.size())
 
         out = self.center(out)
+        #print('center ', out.size())
 
         out = self.up5(down5, out)
+        #print('up5 ', out.size())
+
         out = self.up4(down4, out)
+        #print('up4 ', out.size())
+
         out = self.up3(down3, out)
+
+        #print('up3 ', out.size())
+
         out = self.up2(down2, out)
+
+        #print('up2 ', out.size())
+
         out = self.up1(down1, out)
 
+        #print('up1 ', out.size())
+
         out = self.classify(out)
+        
+        #print('classify', out.size())
+
         out = torch.squeeze(out, dim=1)
         return out
